@@ -12,65 +12,65 @@
 
 import React from 'react';
 import { BlockPicker } from 'react-color';
-const base_url = 'https://stacks.stackery.io/23628740815157/blink'
-const blinks_url = base_url + 's'
-const update_base = base_url
+const baseUrl = 'https://stacks.stackery.io/23628740815157/blink';
+const blinksUrl = `${baseUrl}s`;
+const updateBase = baseUrl;
 
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       background: '#0ff',
       colors: ['#fff', '#000'],
       blinks: [],
-      selectedBlink: {}
+      selectedBlink: {},
     };
   }
 
-  handleChangeComplete = (color) => {
-    const { selectedBlink } = this.state
-    const { iftttkey } = selectedBlink
-    if (iftttkey) {
-      fetch(`${update_base}/${iftttkey}`, {
-        method: 'PATCH',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          value: color.hex
-        })
-      })
-    }
-    this.setState({ background: color.hex });
-  };
+  componentDidMount() {
+    fetch(blinksUrl).then((response) => {
+      return response.json().then((json) => {
+        this.setState({ blinks: json, selectedBlink: json[0] });
+      });
+    });
+  }
 
   handleBlinkSelect = (blink) => {
     this.setState({ selectedBlink: blink });
   }
 
-  componentDidMount() {
-    fetch(blinks_url).then((response) => {
-      return response.json().then((json) => {
-        this.setState({blinks: json, selectedBlink: json[0]});
-      })
-    })
-  }
+  handleChangeComplete = (color) => {
+    const { selectedBlink } = this.state;
+    const { iftttkey } = selectedBlink;
+    if (iftttkey) {
+      fetch(`${updateBase}/${iftttkey}`, {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          value: color.hex,
+        }),
+      });
+    }
+    this.setState({ background: color.hex });
+  };
 
   render() {
-    const {blinks, selectedBlink, background} = this.state;
+    const { blinks, selectedBlink, background } = this.state;
     return (
       <div>
         <h1>Control team blink1s</h1>
         <select name="select">
           {blinks.map((blink, index) => (
-            <option key={index} value={blink.username} onChange={ this.handleBlinkSelect.bind(this, blink) }>{blink.displayname}</option>
+            <option key={index} value={blink.username} onChange={this.handleBlinkSelect.bind(this, blink)}>{blink.displayname}</option>
           ))}
         </select>
         <h2>{selectedBlink.displayname}</h2>
-        <BlockPicker color={ background } onChangeComplete={ this.handleChangeComplete } />
+        <BlockPicker color={background} onChangeComplete={this.handleChangeComplete} />
       </div>
-    )
+    );
   }
 }
 
