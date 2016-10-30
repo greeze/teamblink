@@ -12,8 +12,9 @@
 
 import React from 'react';
 import { BlockPicker } from 'react-color';
-const blinks_gist = 'https://gist.githubusercontent.com/bettse/2d97bd6c10ca84eeb4652b4d4ac18374/raw/38a159b28296596e927eaa594714fdde1209f495/blinks.json'
-const update_base= 'https://stacks.stackery.io/23628740815157/blink'
+const base_url = 'https://stacks.stackery.io/23628740815157/blink'
+const blinks_url = base_url + 's'
+const update_base = base_url
 
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
@@ -31,7 +32,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
     const { iftttkey } = selectedBlink
     if (iftttkey) {
       fetch(`${update_base}/${iftttkey}`, {
-        method: 'POST',
+        method: 'PATCH',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -49,7 +50,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   }
 
   componentDidMount() {
-    fetch(blinks_gist).then((response) => {
+    fetch(blinks_url).then((response) => {
       return response.json().then((json) => {
         this.setState({blinks: json, selectedBlink: json[0]});
       })
