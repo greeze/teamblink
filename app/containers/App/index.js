@@ -12,6 +12,8 @@
  */
 
 import React from 'react';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
 
 import styles from './styles.css';
 
@@ -23,9 +25,12 @@ export default class App extends React.Component { // eslint-disable-line react/
 
   render() {
     return (
-      <div className={styles.container}>
-        {React.Children.toArray(this.props.children)}
-      </div>
+      <MuiThemeProvider>
+        <div className={styles.container}>
+          <AppBar title="Team Blinks" />
+          {React.Children.toArray(this.props.children)}
+        </div>
+      </MuiThemeProvider>
     );
   }
 }
