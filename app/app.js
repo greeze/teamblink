@@ -16,7 +16,8 @@ import 'file?name=[name].[ext]!./.htaccess';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { applyRouterMiddleware, Router, browserHistory } from 'react-router';
+import { createHistory } from 'history';
+import { applyRouterMiddleware, Router, useRouterHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { useScroll } from 'react-router-scroll';
 import LanguageProvider from 'containers/LanguageProvider';
@@ -32,6 +33,9 @@ import 'sanitize.css/sanitize.css';
 // this uses the singleton browserHistory provided by react-router
 // Optionally, this could be changed to leverage a created history
 // e.g. `const browserHistory = useRouterHistory(createBrowserHistory)();`
+const browserHistory = useRouterHistory(createHistory)({
+  basename: '/teamblink',
+});
 const initialState = {};
 const store = configureStore(initialState, browserHistory);
 
