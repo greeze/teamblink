@@ -11,39 +11,27 @@
 
 
 import React from 'react';
-
 import Paper from 'material-ui/Paper';
 import { Card, CardTitle, CardHeader } from 'material-ui/Card';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-
 import { BlockPicker } from 'react-color';
+
+import styles from './styles.css';
 
 const baseUrl = 'https://stacks.stackery.io/23628740815157/blink';
 const blinksUrl = `${baseUrl}s`;
 const updateBase = baseUrl;
 
-const styles = {
-  paper: {
-    margin: 20,
-    textAlign: 'center',
-    display: 'inline-block',
-    minWidth: 210,
-  },
-  picker: {
-    width: 170, // BlockPicker's default width
-    margin: '0 auto',
-  },
-};
-
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static defaultProps = {
+    defaultColor: '#000',
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      background: '#0ff',
-      colors: ['#fff', '#000'],
       blinks: [],
-      selectedUsername: '',
     };
   }
 
@@ -55,14 +43,9 @@ export default class HomePage extends React.Component { // eslint-disable-line r
     });
   }
 
-  handleBlinkSelect = (event, index, value) => {
-    this.setState({ selectedUsername: value });
-  }
-
-  handleChangeComplete = (color) => {
-    const { blinks, selectedUsername } = this.state;
-    const selectedBlink = blinks.find((blink) => { return blink.username === selectedUsername; }) || {};
-    const { iftttkey } = selectedBlink;
+  handleChangeComplete = (color, blink) => {
+    blink.hex = color.hex
+    const { iftttkey } = blink;
     if (iftttkey) {
       fetch(`${updateBase}/${iftttkey}`, {
         method: 'PATCH',
@@ -75,33 +58,21 @@ export default class HomePage extends React.Component { // eslint-disable-line r
         }),
       });
     }
-    this.setState({ background: color.hex });
   };
 
   render() {
-    const { blinks, selectedUsername, background } = this.state;
-    const selectedBlink = blinks.find((blink) => { return blink.username === selectedUsername; });
+    const { defaultColor } = this.props
+    const { blinks } = this.state;
     return (
-      <Paper style={styles.paper} zDepth={1}>
-
-      { blinks.length > 1 &&
-        <SelectField autoWidth floatingLabelText="Person" value={this.state.selectedUsername} onChange={this.handleBlinkSelect}>
+      <Paper className={styles.paper} zDepth={1}>
         {blinks.map((blink, index) => (
-          <MenuItem key={index} value={blink.username} primaryText={blink.displayname} />
+          <Card className={styles.card} key={index}>
+            <CardTitle title={blink.displayname} />
+            <div className={styles.picker}>
+              <BlockPicker color={blink.hex || defaultColor} onChangeComplete={(color) => { this.handleChangeComplete(color, blink) }} />
+            </div>
+          </Card>
         ))}
-        </SelectField>
-      }
-
-      { !selectedBlink && <Card><CardHeader title="Loading..." /></Card> }
-      { selectedBlink &&
-        <Card>
-          <CardTitle title={selectedBlink.displayname} />
-          <div style={styles.picker}>
-            <BlockPicker color={background} onChangeComplete={this.handleChangeComplete} />
-          </div>
-        </Card>
-      }
-
       </Paper>
     );
   }

@@ -1,0 +1,15 @@
+.paper {
+  margin: 20px;
+  text-align: center;
+  min-width: 210px;
+}
+
+.card {
+  display: inline-block;
+  margin: 20px;
+}
+
+.picker {
+  width: 170px;
+  margin: 0 auto;
+}
