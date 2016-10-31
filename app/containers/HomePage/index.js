@@ -28,7 +28,7 @@ const styles = {
     margin: 20,
     textAlign: 'center',
     display: 'inline-block',
-    'min-width': 210,
+    minWidth: 210,
   },
   picker: {
     width: 170, // BlockPicker's default width
@@ -85,7 +85,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
       <Paper style={styles.paper} zDepth={1}>
 
       { blinks.length > 1 &&
-        <SelectField autoWidth="true" floatingLabelText="Person" value={this.state.selectedUsername} onChange={this.handleBlinkSelect}>
+        <SelectField autoWidth floatingLabelText="Person" value={this.state.selectedUsername} onChange={this.handleBlinkSelect}>
         {blinks.map((blink, index) => (
           <MenuItem key={index} value={blink.username} primaryText={blink.displayname} />
         ))}
@@ -106,4 +106,3 @@ export default class HomePage extends React.Component { // eslint-disable-line r
     );
   }
 }
-
