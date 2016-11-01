@@ -12,9 +12,7 @@
 
 import React from 'react';
 import Paper from 'material-ui/Paper';
-import { Card, CardTitle, CardHeader } from 'material-ui/Card';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import { Card, CardTitle } from 'material-ui/Card';
 import { BlockPicker } from 'react-color';
 
 import styles from './styles.css';
@@ -24,9 +22,13 @@ const blinksUrl = `${baseUrl}s`;
 const updateBase = baseUrl;
 
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  static propTypes = {
+    defaultColor: React.PropTypes.string,
+  };
+
   static defaultProps = {
     defaultColor: '#000',
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -43,8 +45,10 @@ export default class HomePage extends React.Component { // eslint-disable-line r
     });
   }
 
-  handleChangeComplete = (color, blink) => {
-    blink.hex = color.hex
+  handleChangeComplete = (color, blinkIndex) => {
+    const { blinks } = this.state;
+    const blink = blinks[blinkIndex];
+    blink.hex = color.hex;
     const { iftttkey } = blink;
     if (iftttkey) {
       fetch(`${updateBase}/${iftttkey}`, {
@@ -61,7 +65,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
   };
 
   render() {
-    const { defaultColor } = this.props
+    const { defaultColor } = this.props;
     const { blinks } = this.state;
     return (
       <Paper className={styles.paper} zDepth={1}>
@@ -69,7 +73,7 @@ export default class HomePage extends React.Component { // eslint-disable-line r
           <Card className={styles.card} key={index}>
             <CardTitle title={blink.displayname} />
             <div className={styles.picker}>
-              <BlockPicker color={blink.hex || defaultColor} onChangeComplete={(color) => { this.handleChangeComplete(color, blink) }} />
+              <BlockPicker className={styles.blockpicker} color={blink.hex || defaultColor} onChangeComplete={(color) => { this.handleChangeComplete(color, index); }} />
             </div>
           </Card>
         ))}
